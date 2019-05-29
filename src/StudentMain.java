@@ -1,4 +1,5 @@
 import operations.*;
+import student.pd150258_BuyerOperations;
 import student.pd150258_CityOperations;
 import student.pd150258_GeneralOperations;
 import student.pd150258_ShopOperations;
@@ -14,7 +15,7 @@ public class StudentMain {
     public static void main(String[] args) {
 
         ArticleOperations articleOperations = null; // Change this for your implementation (points will be negative if interfaces are not implemented).
-        BuyerOperations buyerOperations = null;
+        BuyerOperations buyerOperations = new pd150258_BuyerOperations();
         CityOperations cityOperations = new pd150258_CityOperations();
         GeneralOperations generalOperations = new pd150258_GeneralOperations();
         OrderOperations orderOperations = null;

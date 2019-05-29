@@ -45,19 +45,26 @@ public class BuyerOperationsTest {
     public void insertBuyer(){
         int cityId = cityOperations.createCity("Kragujevac");
         Assert.assertNotEquals(-1, cityId);
+        
 
         int buyerId = buyerOperations.createBuyer("Pera", cityId);
         Assert.assertNotEquals(-1, buyerId);
+        
     }
 
     @Test
     public void changeCity(){
         int cityId1 = cityOperations.createCity("Kragujevac");
+
         int cityId2 = cityOperations.createCity("Beograd");
+        
         int buyerId = buyerOperations.createBuyer("Lazar", cityId1);
+        
+        
         buyerOperations.setCity(buyerId, cityId2);
 
         int cityId = buyerOperations.getCity(buyerId);
+        
         Assert.assertEquals(cityId2, cityId);
     }
 
@@ -67,10 +74,11 @@ public class BuyerOperationsTest {
         int buyerId = buyerOperations.createBuyer("Pera", cityId);
 
         BigDecimal credit1 = new BigDecimal("1000");
-
+        
         BigDecimal creditReturned = buyerOperations.increaseCredit(buyerId, credit1);
         Assert.assertEquals(credit1, creditReturned);
-
+        
+        
         BigDecimal credit2 = new BigDecimal("500");
         buyerOperations.increaseCredit(buyerId, credit2);
 
