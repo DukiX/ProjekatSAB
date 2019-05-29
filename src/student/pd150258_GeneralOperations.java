@@ -32,22 +32,26 @@ public class pd150258_GeneralOperations implements GeneralOperations {
 	@Override
 	public void eraseAll() {
 		Connection connection = DB.getInstance().getConnection();
-		String sql1 = "delete from Shop";
-		String sql2 = "delete from ShopBuyer";
-		String sql3 = "delete from Line";
-		String sql4 = "delete from City";
 		try {
-			Statement s1 = connection.createStatement();
-			s1.executeUpdate(sql1);
+			connection.createStatement().executeUpdate("delete from OrderLocation");
+			
+			connection.createStatement().executeUpdate("delete from [Transaction]");
+			
+			connection.createStatement().executeUpdate("delete from OrderItems");
+			
+			connection.createStatement().executeUpdate("delete from Article");
+			
+			connection.createStatement().executeUpdate("delete from [Order]");
+			
+			connection.createStatement().executeUpdate("delete from Buyer");
+			
+			connection.createStatement().executeUpdate("delete from Shop");
 
-			Statement s2 = connection.createStatement();
-			s2.executeUpdate(sql2);
+			connection.createStatement().executeUpdate("delete from ShopBuyer");
 
-			Statement s3 = connection.createStatement();
-			s3.executeUpdate(sql3);
+			connection.createStatement().executeUpdate("delete from Line");
 
-			Statement s4 = connection.createStatement();
-			s4.executeUpdate(sql4);
+			connection.createStatement().executeUpdate("delete from City");
 
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -104,7 +104,20 @@ public class pd150258_CityOperations implements CityOperations {
 
 	@Override
 	public List<Integer> getShops(int cityId) {
-		// TODO Auto-generated method stub
+		LinkedList<Integer> lst = new LinkedList<>();
+		Connection connection = DB.getInstance().getConnection();
+		String selectQuery = "select Id from ShopBuyer where IdCity = ? and Id in (select id from Shop)";
+		try {
+			PreparedStatement ps = connection.prepareStatement(selectQuery);
+			ps.setInt(1, cityId);
+			ResultSet resultSet = ps.executeQuery();
+			while (resultSet.next()) {
+				lst.add(resultSet.getInt(1));
+			}
+			return lst;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
