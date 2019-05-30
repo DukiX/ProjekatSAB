@@ -10,23 +10,25 @@ import java.util.Calendar;
 import operations.GeneralOperations;
 
 public class pd150258_GeneralOperations implements GeneralOperations {
+	
+	private Calendar initialTime;
+	private Calendar currentTime;
 
 	@Override
 	public void setInitialTime(Calendar time) {
-		// TODO Auto-generated method stub
-
+		initialTime = time;
+		currentTime = time;
 	}
 
 	@Override
 	public Calendar time(int days) {
-		// TODO Auto-generated method stub
-		return null;
+		currentTime.add(Calendar.DATE, days);
+		return currentTime;
 	}
 
 	@Override
 	public Calendar getCurrentTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return currentTime;
 	}
 
 	@Override

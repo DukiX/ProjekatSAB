@@ -1,7 +1,9 @@
 import operations.*;
+import student.pd150258_ArticleOperations;
 import student.pd150258_BuyerOperations;
 import student.pd150258_CityOperations;
 import student.pd150258_GeneralOperations;
+import student.pd150258_OrderOperations;
 import student.pd150258_ShopOperations;
 
 import org.junit.Test;
@@ -14,11 +16,11 @@ public class StudentMain {
 
     public static void main(String[] args) {
 
-        ArticleOperations articleOperations = null; // Change this for your implementation (points will be negative if interfaces are not implemented).
+        ArticleOperations articleOperations = new pd150258_ArticleOperations(); // Change this for your implementation (points will be negative if interfaces are not implemented).
         BuyerOperations buyerOperations = new pd150258_BuyerOperations();
         CityOperations cityOperations = new pd150258_CityOperations();
         GeneralOperations generalOperations = new pd150258_GeneralOperations();
-        OrderOperations orderOperations = null;
+        OrderOperations orderOperations = new pd150258_OrderOperations();
         ShopOperations shopOperations = new pd150258_ShopOperations();
         TransactionOperations transactionOperations = null;
 //

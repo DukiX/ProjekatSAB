@@ -28,7 +28,7 @@ public class pd150258_CityOperations implements CityOperations {
 			if (rs.next()) {
 				key = rs.getInt(1);
 			}
-			
+
 			return key;
 
 		} catch (SQLException e) {
@@ -48,7 +48,9 @@ public class pd150258_CityOperations implements CityOperations {
 			while (resultSet.next()) {
 				lst.add(resultSet.getInt(1));
 			}
-			return lst;
+			if (!lst.isEmpty()) {
+				return lst;
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -73,7 +75,7 @@ public class pd150258_CityOperations implements CityOperations {
 			if (rs.next()) {
 				key = rs.getInt(1);
 			}
-			
+
 			return key;
 
 		} catch (SQLException e) {
