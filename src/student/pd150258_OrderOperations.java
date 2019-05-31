@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
@@ -161,12 +162,14 @@ public class pd150258_OrderOperations implements OrderOperations {
 	@Override
 	public int completeOrder(int orderId) {
 		Connection connection = DB.getInstance().getConnection();
-		String updateStatus = "update [Order] set State = 'sent' where Id = ?";
+		String updateStatus = "update [Order] set State = 'sent', SentTime = ? where Id = ?";
 		String removeCredit = "update Buyer set Credit = Credit - ? where Id = (select IdBuyer from [Order] where Id = ?) and Credit >= ?";
-
+		String newTransaction = "insert into [Transaction](Amount, IdOrder, TimeOfExecution, IdShopBuyer) values(?,?,?,?)";
 		try {
 			PreparedStatement status = connection.prepareStatement(updateStatus);
-			status.setInt(1, orderId);
+			Timestamp ts = new Timestamp(pd150258_GeneralOperations.currentTime.getTimeInMillis());
+			status.setTimestamp(1, ts);
+			status.setInt(2, orderId);
 			int cnt1 = status.executeUpdate();
 			if (cnt1 == 0) {
 				return -1;
@@ -187,7 +190,28 @@ public class pd150258_OrderOperations implements OrderOperations {
 			if (cnt2 == 0) {
 				return -1;
 			}
-
+			
+			PreparedStatement buy = connection.prepareStatement("select IdBuyer from [Order] where Id=?");
+			buy.setInt(1, orderId);
+			ResultSet res = buy.executeQuery();
+			int idBuyer=0;
+			if(res.next()) {
+				idBuyer=res.getInt(1);
+			}else {
+				return -1;
+			}
+			
+			PreparedStatement newTr = connection.prepareStatement(newTransaction);
+			newTr.setBigDecimal(1, priceToPay);
+			newTr.setInt(2, orderId);
+			newTr.setTimestamp(3, new Timestamp(pd150258_GeneralOperations.currentTime.getTimeInMillis()));
+			newTr.setInt(4, idBuyer);
+			int cnt3 = newTr.executeUpdate();
+			
+			if (cnt3 == 0) {
+				return -1;
+			}
+			
 			return 1;
 
 		} catch (SQLException e) {
@@ -208,16 +232,17 @@ public class pd150258_OrderOperations implements OrderOperations {
 		}
 
 		Connection connection = DB.getInstance().getConnection();
-		String sql = "{call SP_FINAL_PRICE (?, ?)}";
+		String sql = "{call SP_FINAL_PRICE (?, ?, ?)}";
 		try {
 			CallableStatement cs = connection.prepareCall(sql);
-			cs.setInt(1, orderId);
-			cs.registerOutParameter(2, Types.DECIMAL);
+			cs.setTimestamp(1, new Timestamp(pd150258_GeneralOperations.currentTime.getTimeInMillis()));
+			cs.setInt(2, orderId);
+			cs.registerOutParameter(3, Types.DECIMAL);
 
 			cs.execute();
 
-			BigDecimal bd = cs.getBigDecimal(2).setScale(3);
-
+			BigDecimal bd = cs.getBigDecimal(3).setScale(3);
+			
 			return bd;
 
 		} catch (SQLException e) {
@@ -293,7 +318,7 @@ public class pd150258_OrderOperations implements OrderOperations {
 				if (ts == null) {
 					return null;
 				}
-				Calendar cal = Calendar.getInstance();
+				Calendar cal = pd150258_GeneralOperations.currentTime;
 
 				cal.setTimeInMillis(ts.getTime());
 				return cal;
@@ -318,7 +343,10 @@ public class pd150258_OrderOperations implements OrderOperations {
 
 			if (rs.next()) {
 				Timestamp ts = rs.getTimestamp(1);
-				Calendar cal = Calendar.getInstance();
+				if (ts == null) {
+					return null;
+				}
+				Calendar cal = pd150258_GeneralOperations.currentTime;
 				cal.setTimeInMillis(ts.getTime());
 				return cal;
 			}

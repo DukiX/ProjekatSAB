@@ -11,8 +11,8 @@ import operations.GeneralOperations;
 
 public class pd150258_GeneralOperations implements GeneralOperations {
 	
-	private Calendar initialTime;
-	private Calendar currentTime;
+	private static Calendar initialTime;
+	public static Calendar currentTime;
 
 	@Override
 	public void setInitialTime(Calendar time) {

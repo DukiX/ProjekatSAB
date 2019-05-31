@@ -1,5 +1,6 @@
 ALTER PROCEDURE dbo.SP_FINAL_PRICE 
-    @orderId int = 0,
+	@currentTime Datetime,
+    @orderId int,
     @finalPrice DECIMAL(10,3) OUTPUT 
 AS
 	SET NOCOUNT ON;
@@ -9,6 +10,18 @@ AS
 	declare @cnt int
 	declare @discount int
 	declare @price int
+	declare @temp int
+
+	declare @dodatniPopust bit
+
+	select @dodatniPopust = 0
+
+	if(exists(select * from [Transaction] where IdOrder = @orderId and Amount>=10000 and TimeOfExecution >= DATEADD(DAY,-30,@currentTime) and IdShopBuyer in (select Id from Buyer)))
+	begin
+		select @dodatniPopust = 1
+	end
+
+	update [Order] set DodatniPopust=@dodatniPopust where Id = @orderId
 
 	select @finalPrice = 0
 
@@ -28,11 +41,21 @@ AS
 		from Article a join Shop s on (a.IdShop=s.Id)
 		where a.Id = @idAr
 
-		select @finalPrice = @finalPrice + (@cnt * @price)*(@discount/100.0)
+		select @temp = (@cnt * @price)*((100-@discount)/100.0)
+
+		if(@dodatniPopust = 1)
+		begin
+			select @temp = @temp * 0.98
+		end
+
+		select @finalPrice = @finalPrice + @temp
 
 		fetch next from @kursor
 		into @idAr,@cnt
 	end
+
+	close @kursor
+	deallocate @kursor
 
 
 RETURN 0 
