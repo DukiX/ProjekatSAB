@@ -175,7 +175,7 @@ public class pd150258_OrderOperations implements OrderOperations {
 				return -1;
 			}
 
-			BigDecimal priceToPay = getFinalPrice(orderId);
+			BigDecimal priceToPay = getFinalPriceComp(orderId);
 			if (priceToPay == null) {
 				return -1;
 			}
@@ -222,6 +222,37 @@ public class pd150258_OrderOperations implements OrderOperations {
 		return -1;
 	}
 
+	public BigDecimal getFinalPriceComp(int orderId) {
+
+		String s = "";
+		s = getState(orderId);
+		if (s.equals("created")) {
+			return null;
+		}
+
+		Connection connection = DB.getInstance().getConnection();
+		String sql = "{call SP_FINAL_PRICE (?, ?, ?, ?)}";
+		try {
+			CallableStatement cs = connection.prepareCall(sql);
+			cs.setBoolean(1, true);
+			cs.setTimestamp(2, new Timestamp(pd150258_GeneralOperations.currentTime.getTimeInMillis()));
+			cs.setInt(3, orderId);
+			cs.registerOutParameter(4, Types.DECIMAL);
+
+			cs.execute();
+
+			BigDecimal bd = cs.getBigDecimal(4).setScale(3);
+			
+			return bd;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+	
 	@Override
 	public BigDecimal getFinalPrice(int orderId) {
 
@@ -232,16 +263,17 @@ public class pd150258_OrderOperations implements OrderOperations {
 		}
 
 		Connection connection = DB.getInstance().getConnection();
-		String sql = "{call SP_FINAL_PRICE (?, ?, ?)}";
+		String sql = "{call SP_FINAL_PRICE (?, ?, ?, ?)}";
 		try {
 			CallableStatement cs = connection.prepareCall(sql);
-			cs.setTimestamp(1, new Timestamp(pd150258_GeneralOperations.currentTime.getTimeInMillis()));
-			cs.setInt(2, orderId);
-			cs.registerOutParameter(3, Types.DECIMAL);
+			cs.setBoolean(1, false);
+			cs.setTimestamp(2, new Timestamp(pd150258_GeneralOperations.currentTime.getTimeInMillis()));
+			cs.setInt(3, orderId);
+			cs.registerOutParameter(4, Types.DECIMAL);
 
 			cs.execute();
 
-			BigDecimal bd = cs.getBigDecimal(3).setScale(3);
+			BigDecimal bd = cs.getBigDecimal(4).setScale(3);
 			
 			return bd;
 

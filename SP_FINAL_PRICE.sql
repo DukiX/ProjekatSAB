@@ -1,4 +1,5 @@
 ALTER PROCEDURE dbo.SP_FINAL_PRICE 
+	@complete bit,
 	@currentTime Datetime,
     @orderId int,
     @finalPrice DECIMAL(10,3) OUTPUT 
@@ -15,14 +16,20 @@ AS
 	declare @dodatniPopust bit
 
 	select @dodatniPopust = 0
-
-	if(exists(select * from [Transaction] where IdOrder = @orderId and Amount>=10000 and TimeOfExecution >= DATEADD(DAY,-30,@currentTime) and IdShopBuyer in (select Id from Buyer)))
+	if(@complete = 1)
 	begin
-		select @dodatniPopust = 1
+		if(exists(select * from [Transaction] where IdOrder = @orderId and Amount>=10000 and TimeOfExecution >= DATEADD(DAY,-30,@currentTime) and IdShopBuyer in (select Id from Buyer)))
+		begin
+			select @dodatniPopust = 1
+		end
+
+		update [Order] set DodatniPopust=@dodatniPopust where Id = @orderId
 	end
-
-	update [Order] set DodatniPopust=@dodatniPopust where Id = @orderId
-
+	else
+	begin
+		select @dodatniPopust = DodatniPopust from [Order] where Id = @orderId
+	end
+		
 	select @finalPrice = 0
 
 	set @kursor = cursor for

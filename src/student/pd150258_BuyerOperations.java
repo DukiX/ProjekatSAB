@@ -125,10 +125,11 @@ public class pd150258_BuyerOperations implements BuyerOperations {
 	@Override
 	public int createOrder(int buyerId) {
 		Connection connection = DB.getInstance().getConnection();
-		String create = "insert into [Order] (State,IdBuyer) values ('created',?)";
+		String create = "insert into [Order] (State,IdBuyer,DodatniPopust) values ('created',?,?)";
 		try {
 			PreparedStatement ps = connection.prepareStatement(create,PreparedStatement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, buyerId);
+			ps.setBoolean(2, false);
 			
 			ps.executeUpdate();
 			

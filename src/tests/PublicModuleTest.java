@@ -160,7 +160,9 @@ public class PublicModuleTest {
 		generalOperations.time(2);
 		Assert.assertEquals(initialTime, orderOperations.getSentTime(order));
 		Assert.assertNull(orderOperations.getRecievedTime(order));
-		System.out.println("blaanja");
+		
+		System.out.println("do ovde!");
+		
 		Assert.assertEquals(orderOperations.getLocation(order), cityA);
 
 		generalOperations.time(9);
