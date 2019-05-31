@@ -1,11 +1,13 @@
 package student;
 
 import java.math.BigDecimal;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -158,19 +160,99 @@ public class pd150258_OrderOperations implements OrderOperations {
 
 	@Override
 	public int completeOrder(int orderId) {
-		// TODO Auto-generated method stub
-		return 0;
+		Connection connection = DB.getInstance().getConnection();
+		String updateStatus = "update [Order] set State = 'sent' where Id = ?";
+		String removeCredit = "update Buyer set Credit = Credit - ? where Id = (select IdBuyer from [Order] where Id = ?) and Credit >= ?";
+
+		try {
+			PreparedStatement status = connection.prepareStatement(updateStatus);
+			status.setInt(1, orderId);
+			int cnt1 = status.executeUpdate();
+			if (cnt1 == 0) {
+				return -1;
+			}
+
+			BigDecimal priceToPay = getFinalPrice(orderId);
+			if (priceToPay == null) {
+				return -1;
+			}
+
+			PreparedStatement remove = connection.prepareStatement(removeCredit);
+			remove.setBigDecimal(1, priceToPay);
+			remove.setInt(2, orderId);
+			remove.setBigDecimal(3, priceToPay);
+
+			int cnt2 = remove.executeUpdate();
+
+			if (cnt2 == 0) {
+				return -1;
+			}
+
+			return 1;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return -1;
 	}
 
 	@Override
 	public BigDecimal getFinalPrice(int orderId) {
-		// TODO Auto-generated method stub
+
+		String s = "";
+		s = getState(orderId);
+		if (s.equals("created")) {
+			return null;
+		}
+
+		Connection connection = DB.getInstance().getConnection();
+		String sql = "{call SP_FINAL_PRICE (?, ?)}";
+		try {
+			CallableStatement cs = connection.prepareCall(sql);
+			cs.setInt(1, orderId);
+			cs.registerOutParameter(2, Types.DECIMAL);
+
+			cs.execute();
+
+			BigDecimal bd = cs.getBigDecimal(2).setScale(3);
+
+			return bd;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
+
 	}
 
 	@Override
 	public BigDecimal getDiscountSum(int orderId) {
-		// TODO Auto-generated method stub
+		BigDecimal discountedPrice = getFinalPrice(orderId);
+		if (discountedPrice == null) {
+			return null;
+		}
+
+		Connection connection = DB.getInstance().getConnection();
+		String sql = "select sum(a.ArticlePrice*oi.Count)" + "from OrderItems oi join Article a on(oi.IdArticle = a.Id)"
+				+ "where oi.IdOrder = ?";
+		try {
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setInt(1, orderId);
+
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+				BigDecimal originalPrice = BigDecimal.valueOf(rs.getInt(1));
+				return originalPrice.subtract(discountedPrice);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -206,8 +288,13 @@ public class pd150258_OrderOperations implements OrderOperations {
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
+
 				Timestamp ts = rs.getTimestamp(1);
+				if (ts == null) {
+					return null;
+				}
 				Calendar cal = Calendar.getInstance();
+
 				cal.setTimeInMillis(ts.getTime());
 				return cal;
 			}
@@ -252,11 +339,11 @@ public class pd150258_OrderOperations implements OrderOperations {
 			ps.setInt(1, orderId);
 
 			ResultSet rs = ps.executeQuery();
-			
-			if(rs.next()) {
+
+			if (rs.next()) {
 				return rs.getInt(1);
 			}
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -63,7 +63,7 @@ public class PublicModuleTest {
         Calendar receivedTime = Calendar.getInstance();
         receivedTime.clear();
         receivedTime.set(2018, Calendar.JANUARY, 22);
-
+        
         //make network
         int cityB = cityOperations.createCity("B");
         int cityC1 = cityOperations.createCity("C1");
@@ -113,7 +113,7 @@ public class PublicModuleTest {
         Assert.assertTrue("created".equals(orderOperations.getState(order)));
         orderOperations.completeOrder(order);
         Assert.assertTrue("sent".equals(orderOperations.getState(order)));
-
+        
         int buyerTransactionId = transactionOperations.getTransationsForBuyer(buyer).get(0);
         Assert.assertEquals(initialTime, transactionOperations.getTimeOfExecution(buyerTransactionId));
 

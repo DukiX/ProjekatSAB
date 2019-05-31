@@ -5,6 +5,7 @@ import student.pd150258_CityOperations;
 import student.pd150258_GeneralOperations;
 import student.pd150258_OrderOperations;
 import student.pd150258_ShopOperations;
+import student.pd150258_TransactionOperations;
 
 import org.junit.Test;
 import tests.TestHandler;
@@ -22,7 +23,7 @@ public class StudentMain {
         GeneralOperations generalOperations = new pd150258_GeneralOperations();
         OrderOperations orderOperations = new pd150258_OrderOperations();
         ShopOperations shopOperations = new pd150258_ShopOperations();
-        TransactionOperations transactionOperations = null;
+        TransactionOperations transactionOperations = new pd150258_TransactionOperations();
 //
 //        Calendar c = Calendar.getInstance();
 //        c.clear();
