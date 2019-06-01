@@ -416,5 +416,32 @@ public class pd150258_OrderOperations implements OrderOperations {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public static int shortestPath(int source, int destination) {
+		Connection connection = DB.getInstance().getConnection();
+		String sql = "{call FindShortestGraphPath (?, ?, ?,?)}";
+		try {
+			CallableStatement cs = connection.prepareCall(sql);
+			cs.setInt(1, source);
+			cs.setInt(2, destination);
+			cs.registerOutParameter(3, Types.INTEGER);
+			cs.registerOutParameter(4, Types.VARCHAR);
+			
+			cs.execute();
+			
+			int res = cs.getInt(3);
+			String path = cs.getString(4);
+			
+			System.out.println(res);
+			System.out.println(path);
+			
+			return res;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
 
 }

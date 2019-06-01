@@ -1,6 +1,8 @@
 package tests;
 
 import operations.*;
+import student.pd150258_OrderOperations;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -161,7 +163,9 @@ public class PublicModuleTest {
 		Assert.assertEquals(initialTime, orderOperations.getSentTime(order));
 		Assert.assertNull(orderOperations.getRecievedTime(order));
 		
-		System.out.println("do ovde!");
+		pd150258_OrderOperations.shortestPath(cityC3, cityB);
+		
+		System.out.println("do ovde! ");
 		
 		Assert.assertEquals(orderOperations.getLocation(order), cityA);
 
