@@ -159,26 +159,32 @@ public class PublicModuleTest {
 		
 		Assert.assertEquals(new BigDecimal("0"), transactionOperations.getSystemProfit());
 		
+		//pd150258_OrderOperations.shortestPath(cityC2, cityC3);
+		//pd150258_OrderOperations.locationOperations(order);
+				
 		generalOperations.time(2);
+		
 		Assert.assertEquals(initialTime, orderOperations.getSentTime(order));
 		Assert.assertNull(orderOperations.getRecievedTime(order));
 		
-		pd150258_OrderOperations.shortestPath(cityC3, cityB);
+		
+		
+		
+		Assert.assertEquals(orderOperations.getLocation(order), cityA);
+		
+		generalOperations.time(9);
+		Assert.assertEquals(orderOperations.getLocation(order), cityA);
+		
+		generalOperations.time(8);
+		Assert.assertEquals(orderOperations.getLocation(order), cityC5);
+		
+		generalOperations.time(5);
+		Assert.assertEquals(orderOperations.getLocation(order), cityB);
+		
+		Assert.assertEquals(receivedTime, orderOperations.getRecievedTime(order));
 		
 		System.out.println("do ovde! ");
 		
-		Assert.assertEquals(orderOperations.getLocation(order), cityA);
-
-		generalOperations.time(9);
-		Assert.assertEquals(orderOperations.getLocation(order), cityA);
-
-		generalOperations.time(8);
-		Assert.assertEquals(orderOperations.getLocation(order), cityC5);
-
-		generalOperations.time(5);
-		Assert.assertEquals(orderOperations.getLocation(order), cityB);
-		Assert.assertEquals(receivedTime, orderOperations.getRecievedTime(order));
-
 		Assert.assertEquals(shopAAmountReal, transactionOperations.getShopTransactionsAmmount(shopA));
 		Assert.assertEquals(shopC2AmountReal, transactionOperations.getShopTransactionsAmmount(shopC2));
 		Assert.assertEquals(shopC3AmountReal, transactionOperations.getShopTransactionsAmmount(shopC3));

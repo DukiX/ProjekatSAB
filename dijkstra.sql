@@ -57,6 +57,11 @@ BEGIN
 		SET Estimate = @CurrentEstimate + e.Distance, Predecessor = @FromNode
         FROM #Nodes n INNER JOIN dbo.Line e ON n.Id = e.IdCity2
         WHERE Done = 0 AND e.IdCity1 = @FromNode AND (@CurrentEstimate + e.Distance) < n.Estimate
+
+		UPDATE #Nodes
+		SET Estimate = @CurrentEstimate + e.Distance, Predecessor = @FromNode
+        FROM #Nodes n INNER JOIN dbo.Line e ON n.Id = e.IdCity1
+        WHERE Done = 0 AND e.IdCity2 = @FromNode AND (@CurrentEstimate + e.Distance) < n.Estimate
         
     END;
     

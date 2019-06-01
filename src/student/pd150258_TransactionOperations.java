@@ -178,7 +178,7 @@ public class pd150258_TransactionOperations implements TransactionOperations {
 				if (ts == null) {
 					return null;
 				}
-				Calendar cal = pd150258_GeneralOperations.currentTime;
+				Calendar cal = (Calendar) pd150258_GeneralOperations.currentTime.clone();
 
 				cal.setTimeInMillis(ts.getTime());
 				return cal;
