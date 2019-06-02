@@ -171,7 +171,7 @@ public class pd150258_ShopOperations implements ShopOperations {
 	}
 
 	@Override
-	public int getArticleCount(int shopId, int articleId) {
+	public int getArticleCount(int articleId) {
 		Connection connection = DB.getInstance().getConnection();
 		String select = "select ArticleCount from Article where Id = ?";
 		try {

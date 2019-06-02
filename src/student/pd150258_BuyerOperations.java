@@ -111,7 +111,7 @@ public class pd150258_BuyerOperations implements BuyerOperations {
 			ResultSet rs = sel.executeQuery();
 
 			if (rs.next()) {
-				return rs.getBigDecimal(1).setScale(0, RoundingMode.HALF_EVEN);
+				return rs.getBigDecimal(1);
 			}
 
 		} catch (SQLException e) {
@@ -180,7 +180,7 @@ public class pd150258_BuyerOperations implements BuyerOperations {
 			ResultSet rs = sel.executeQuery();
 
 			if (rs.next()) {
-				return rs.getBigDecimal(1).setScale(0, RoundingMode.HALF_EVEN);
+				return rs.getBigDecimal(1);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

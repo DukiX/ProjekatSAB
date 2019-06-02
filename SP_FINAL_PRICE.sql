@@ -1,4 +1,4 @@
-ALTER PROCEDURE dbo.SP_FINAL_PRICE 
+CREATE PROCEDURE dbo.SP_FINAL_PRICE 
 	@complete bit,
 	@currentTime Datetime,
     @orderId int,

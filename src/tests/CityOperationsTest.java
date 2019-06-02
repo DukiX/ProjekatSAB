@@ -59,7 +59,6 @@ public class CityOperationsTest {
 
         List<Integer> shops = cityOperations.getShops(cityId);
         Assert.assertEquals(2, shops.size());
-        
         Assert.assertTrue(shops.contains(shopId1) && shops.contains(shopId2));
     }
 

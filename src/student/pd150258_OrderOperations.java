@@ -27,11 +27,20 @@ public class pd150258_OrderOperations implements OrderOperations {
 		String proveraDovoljno = "select * from Article where Id = ? and ArticleCount >= ?";
 		String samoDodavanje = "select Id from OrderItems where IdArticle = ? and IdOrder = ?";
 		String update = "update OrderItems set Count = Count + ? where Id = ?";
-		String insert = "insert into OrderItems(Count,IdArticle,IdOrder) values(?,?,?)";
+		
+		String cena = "select a.ArticlePrice*((100.0-s.DiscountPercentage)/100.0) from Article a join Shop s on (a.IdShop = s.Id) where a.id = ?";
+		
+		String insert = "insert into OrderItems(Count,IdArticle,IdOrder,Price) values(?,?,?,?)";
 
 		String smanji = "update Article set ArticleCount = ArticleCount - ? where Id = ?";
 
 		try {
+			PreparedStatement cn = connection.prepareStatement(cena);
+			cn.setInt(1, articleId);
+			ResultSet cnrs = cn.executeQuery();
+			cnrs.next();
+			int articlePrice = cnrs.getInt(1);
+			
 			PreparedStatement pd = connection.prepareStatement(proveraDovoljno);
 			pd.setInt(1, articleId);
 			pd.setInt(2, count);
@@ -74,6 +83,7 @@ public class pd150258_OrderOperations implements OrderOperations {
 					ins.setInt(1, count);
 					ins.setInt(2, articleId);
 					ins.setInt(3, orderId);
+					ins.setInt(4,articlePrice);
 					ins.executeUpdate();
 
 					ResultSet insrs = ins.getGeneratedKeys();

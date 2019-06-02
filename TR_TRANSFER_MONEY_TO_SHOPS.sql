@@ -1,4 +1,4 @@
-ALTER TRIGGER TR_TRANSFER_MONEY_TO_SHOPS
+alter TRIGGER TR_TRANSFER_MONEY_TO_SHOPS
     ON [dbo].[Order]
     FOR UPDATE
     AS
@@ -44,7 +44,7 @@ ALTER TRIGGER TR_TRANSFER_MONEY_TO_SHOPS
 				declare @suma int
 
 				set @kursor = cursor for
-				select s.Id, sum(oi.Count*a.ArticlePrice*((100.0-s.DiscountPercentage)/100.0))
+				select s.Id, sum(oi.Count*oi.Price)
 				from OrderItems oi join Article a on oi.IdArticle=a.Id
 				join Shop s on s.Id=a.IdShop
 				where oi.IdOrder=@idins

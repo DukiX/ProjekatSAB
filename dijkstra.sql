@@ -1,4 +1,4 @@
-alter PROCEDURE dbo.FindShortestGraphPath (@StartNode int, @EndNode int,@dist integer OUT,@pathStr Varchar(100) out)
+Create PROCEDURE dbo.FindShortestGraphPath (@StartNode int, @EndNode int,@dist integer OUT,@pathStr Varchar(100) out)
 AS
 BEGIN
     -- Automatically rollback the transaction if something goes wrong.    
