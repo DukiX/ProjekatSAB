@@ -269,7 +269,7 @@ public class pd150258_TransactionOperations implements TransactionOperations {
 		Connection connection = DB.getInstance().getConnection();
 		String sql = "select sum(t.Amount * (CASE When o.DodatniPopust = 1 Then 0.03 Else 0.05 End))"
 				+ "from [Transaction] t join [Order] o on(t.IdOrder = o.Id) "
-				+ "where t.IdShopBuyer in (select Id from Shop)";
+				+ "where t.IdShopBuyer in (select Id from Buyer) and o.State = 'arrived'";
 		try {
 			Statement st = connection.createStatement();
 
@@ -278,7 +278,7 @@ public class pd150258_TransactionOperations implements TransactionOperations {
 			if (rs.next()) {
 				BigDecimal bd = rs.getBigDecimal(1);
 				if(bd!=null) {
-					return bd;
+					return bd.setScale(3);
 				}
 			}
 
