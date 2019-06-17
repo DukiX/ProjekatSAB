@@ -118,6 +118,8 @@ public class PublicModuleTest {
         Assert.assertEquals(initialTime, transactionOperations.getTimeOfExecution(buyerTransactionId));
 
         Assert.assertNull(transactionOperations.getTransationsForShop(shopA));
+        
+        
 
         //calculate ammounts - begin
         BigDecimal shopAAmount = new BigDecimal("5").multiply(new BigDecimal("1000")).setScale(3);
@@ -130,7 +132,7 @@ public class PublicModuleTest {
 
         BigDecimal amountWithoutDiscounts = shopAAmount.add(shopC2Amount).add(shopC3Amount).setScale(3);
         BigDecimal amountWithDiscounts = shopAAmountWithDiscount.add(shopC2AmountWithDiscount).add(shopC3AmountWithDiscount).setScale(3);
-
+        
         BigDecimal systemProfit = amountWithDiscounts.multiply(new BigDecimal("0.05")).setScale(3);
         BigDecimal shopAAmountReal = shopAAmountWithDiscount.multiply(new BigDecimal("0.95")).setScale(3);
         BigDecimal shopC2AmountReal = shopC2AmountWithDiscount.multiply(new BigDecimal("0.95")).setScale(3);
@@ -141,11 +143,15 @@ public class PublicModuleTest {
         Assert.assertEquals(amountWithoutDiscounts.subtract(amountWithDiscounts), orderOperations.getDiscountSum(order));
 
         Assert.assertEquals(amountWithDiscounts, transactionOperations.getBuyerTransactionsAmmount(buyer));
-        Assert.assertNull(transactionOperations.getShopTransactionsAmmount(shopA));
-        Assert.assertNull(transactionOperations.getShopTransactionsAmmount(shopC2));
-        Assert.assertNull(transactionOperations.getShopTransactionsAmmount(shopC3));
-        Assert.assertEquals(new BigDecimal("0"), transactionOperations.getSystemProfit());
+        
+        Assert.assertEquals(transactionOperations.getShopTransactionsAmmount(shopA), new BigDecimal("0").setScale(3));
+        
+        Assert.assertEquals(transactionOperations.getShopTransactionsAmmount(shopC2), new BigDecimal("0").setScale(3));
+        Assert.assertEquals(transactionOperations.getShopTransactionsAmmount(shopC3), new BigDecimal("0").setScale(3));
+        Assert.assertEquals(new BigDecimal("0").setScale(3), transactionOperations.getSystemProfit());
 
+       
+        
         generalOperations.time(2);
         Assert.assertEquals(initialTime, orderOperations.getSentTime(order));
         Assert.assertNull(orderOperations.getRecievedTime(order));

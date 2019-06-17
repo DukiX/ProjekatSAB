@@ -26,7 +26,12 @@ public class pd150258_TransactionOperations implements TransactionOperations {
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
-				return rs.getBigDecimal(1);
+				if(rs.getBigDecimal(1)!=null) {
+					return rs.getBigDecimal(1);
+				}
+				else {
+					return new BigDecimal("0").setScale(3);
+				}
 			}
 
 			return new BigDecimal(0);
@@ -50,7 +55,12 @@ public class pd150258_TransactionOperations implements TransactionOperations {
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
-				return rs.getBigDecimal(1);
+				if(rs.getBigDecimal(1)!=null) {
+					return rs.getBigDecimal(1);
+				}
+				else {
+					return new BigDecimal("0").setScale(3);
+				}
 			}
 
 			return new BigDecimal(0);
@@ -286,7 +296,7 @@ public class pd150258_TransactionOperations implements TransactionOperations {
 			// TODO Auto-generated catch block
 
 		}
-		return new BigDecimal(0);
+		return new BigDecimal(0).setScale(3);
 	}
 
 }
